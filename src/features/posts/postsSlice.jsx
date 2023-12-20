@@ -20,9 +20,19 @@ const initialState = [
 const postsSlice = createSlice({
     name: 'posts',
     initialState,
-    reducers: {}
+    reducers: {
+        postAdded(state, action) {
+            state.push(action.payload) 
+            //payload is the form data ssubmitted by the user
+            //we are pushing to state which is mutating the state
+            //we can only mutate the state inside the createSlice and nowhere else
+            //we can do this here because of immerjs
+        },
+    }
 })
 
 export const selectAllPosts = (state) => state.posts
+
+export const { postAdded } = postsSlice.actions
 
 export default postsSlice.reducer
