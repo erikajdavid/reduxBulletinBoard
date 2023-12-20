@@ -1,6 +1,7 @@
 import { useState } from 'react'
-//we are not using useSelector here because we are not going to send this info to the global state. 
-//we only want to send things to the global state that are going to be used in multiple components.
+import { useDispatch } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit'; //this will generate random ids
+import { postAdded } from './postsSlice';
 
 const AddPostForm = () => {
     const [title, setTitle] = useState('');
@@ -8,6 +9,24 @@ const AddPostForm = () => {
 
     const onTitleChanged = e => setTitle(e.target.value);
     const onContentChanged = e => setContent(e.target.value);
+
+    const dispatch = useDispatch();
+
+    const onSavePostClicked = () => {
+        if (title && content) {
+            dispatch(
+                postAdded({
+                    id: nanoid(),
+                    title,
+                    content
+                })
+            )
+
+            setTitle('')
+            setContent('')
+        }
+    }
+    
     return (
         <section>
             <h2>Add Post</h2>
@@ -34,7 +53,11 @@ const AddPostForm = () => {
                 >  
                 </input>
 
-                <button type="submit">Save Post</button>
+                <button 
+                    type="submit"
+                    onClick={onSavePostClicked}
+                >Save Post
+                </button>
             </form>
 
         </section>
