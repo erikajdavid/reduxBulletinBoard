@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 //useSelector will get the global state
-import { selectAllPosts } from "./postSlice";
+import { selectAllPosts } from "./postsSlice";
 
 const PostsList = () => {
 
