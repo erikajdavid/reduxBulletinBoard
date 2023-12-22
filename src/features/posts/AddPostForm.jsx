@@ -33,7 +33,6 @@ const AddPostForm = () => {
                     name="postTitle"
                     value={title}
                     onChange={onTitleChanged}
-                    required
                 >  
                 </input>
 
@@ -44,7 +43,6 @@ const AddPostForm = () => {
                     name="postContent"
                     value={content}
                     onChange={onContentChanged}
-                    required
                 >  
                 </input>
 
