@@ -2,18 +2,21 @@
 //this slice handles everything related to the posts. 
 
 import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { sub } from 'date-fns';
 
 //hard coding this in for now...
 const initialState = [
     {
         id: '1',
         title: 'Learning Redux Toolkit',
-        content: 'Blah blah blah'
+        content: 'Blah blah blah',
+        date: sub(new Date(), { minutes: 10 }).toISOString()
     },
     {
         id: '2',
         title: 'Learning about slices',
-        content: 'Blah blah blah blah blah'
+        content: 'Blah blah blah blah blah',
+        date: sub(new Date(), { minutes: 5 }).toISOString()
     },
 ]
 
@@ -35,6 +38,7 @@ const postsSlice = createSlice({
                         id: nanoid(),
                         title,
                         content,
+                        date: new Date().toISOString(),
                         userId
                     }
                 }
