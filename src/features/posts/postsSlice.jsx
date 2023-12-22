@@ -29,12 +29,13 @@ const postsSlice = createSlice({
             //we can only mutate the state inside the createSlice and nowhere else
             //we can do this here because of immerjs
             },
-            prepare(title, content) {
+            prepare(title, content, userId) {
                 return {
                     payload: {
                         id: nanoid(),
                         title,
-                        content
+                        content,
+                        userId
                     }
                 }
             }
