@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit'; //this will generate random ids
 import { postAdded } from './postsSlice';
 
 const AddPostForm = () => {
@@ -15,11 +14,7 @@ const AddPostForm = () => {
     const onSavePostClicked = () => {
         if (title && content) {
             dispatch(
-                postAdded({
-                    id: nanoid(),
-                    title,
-                    content
-                })
+                postAdded(title, content)
             )
 
             setTitle('')

@@ -1,7 +1,7 @@
 //slice is where you divide up the state
 //this slice handles everything related to the posts. 
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 //hard coding this in for now...
 const initialState = [
@@ -21,13 +21,24 @@ const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        postAdded(state, action) {
+        postAdded: {
+            reducer(state, action) {
             state.push(action.payload) 
             //payload is the form data ssubmitted by the user
             //we are pushing to state which is mutating the state
             //we can only mutate the state inside the createSlice and nowhere else
             //we can do this here because of immerjs
-        },
+            },
+            prepare(title, content) {
+                return {
+                    payload: {
+                        id: nanoid(),
+                        title,
+                        content
+                    }
+                }
+            }
+        }
     }
 })
 
