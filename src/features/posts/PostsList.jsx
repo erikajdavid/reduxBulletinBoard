@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 //useSelector will get the global state
 import { selectAllPosts } from "./postsSlice";
+import PostAuthor from "./PostAuthor";
 
 const PostsList = () => {
 
@@ -11,6 +12,7 @@ const PostsList = () => {
             <article key={post.id}>
                 <h3>{post.title}</h3>
                 <p>{post.content.substring(0, 100)}</p>
+                <PostAuthor userId={post.userId}/>
             </article>          
         )
     })
