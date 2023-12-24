@@ -1,24 +1,51 @@
 //slice is where you divide up the state
 //this slice handles everything related to the posts. 
 
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+
+//redux does everything synchoronously so anything asynchonous has to happen outside the store. this is where redux middlewhere comes in. the most common async middleware is redux thunk. 
+//thunks are recommended as the standard approach for writing async logic with redux. 
+//what does thunk mean? the word thunk is a programming term that means "a piece of code that does some delayed work" 
+
+import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
 import { sub } from 'date-fns';
+import axios from "axios";
+
+const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 
 //hard coding this in for now...
-const initialState = [
-    {
-        id: '1',
-        title: 'Learning Redux Toolkit',
-        content: 'Blah blah blah',
-        date: sub(new Date(), { minutes: 10 }).toISOString()
-    },
-    {
-        id: '2',
-        title: 'Learning about slices',
-        content: 'Blah blah blah blah blah',
-        date: sub(new Date(), { minutes: 5 }).toISOString()
-    },
-]
+// const initialState = [
+//     {
+//         id: '1',
+//         title: 'Learning Redux Toolkit',
+//         content: 'Blah blah blah',
+//         date: sub(new Date(), { minutes: 10 }).toISOString()
+//     },
+//     {
+//         id: '2',
+//         title: 'Learning about slices',
+//         content: 'Blah blah blah blah blah',
+//         date: sub(new Date(), { minutes: 5 }).toISOString()
+//     },
+// ]
+
+//we are commeting out the original initial state now bc that is a static state. we now want to bring in information from an API server (dynamic).
+
+const initialState = {
+    posts: [],
+    status: 'idle', //'idle' | 'loading' | 'suceeded' | 'failed'
+    error: null
+}
+
+//createAsyncThunk accepts two arguments: the first is a string and the second a create callback.
+
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+    try {
+        const response = await axios.get(POSTS_URL)
+        return [...response.date];
+    } catch (err) {
+        return err.message
+    }
+})
 
 const postsSlice = createSlice({
     name: 'posts',
@@ -26,7 +53,7 @@ const postsSlice = createSlice({
     reducers: {
         postAdded: {
             reducer(state, action) {
-            state.push(action.payload) 
+            state.posts.push(action.payload) 
             //payload is the form data ssubmitted by the user
             //we are pushing to state which is mutating the state
             //we can only mutate the state inside the createSlice and nowhere else
@@ -47,7 +74,7 @@ const postsSlice = createSlice({
     }
 })
 
-export const selectAllPosts = (state) => state.posts
+export const selectAllPosts = (state) => state.posts.posts
 
 export const { postAdded } = postsSlice.actions
 
