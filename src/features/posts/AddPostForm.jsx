@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { postAdded } from "./postsSlice";
+import { addNewPost } from "./postsSlice";
 import { selectAllUsers } from "../users/usersSlice";
 
 const AddPostForm = () => {
@@ -10,6 +10,9 @@ const AddPostForm = () => {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [userId, setUserId] = useState('')
+    const [addRequestStatus, setAddRequestStatus] = useState('idle')
+
+    const canSave = [title, content, userId].every(Boolean) && addRequestStatus === 'idle';
 
     const users = useSelector(selectAllUsers)
 
@@ -18,17 +21,22 @@ const AddPostForm = () => {
     const onAuthorChanged = e => setUserId(e.target.value)
 
     const onSavePostClicked = () => {
-        if (title && content) {
-            dispatch(
-                postAdded(title, content, userId)
-            )
-            setTitle('')
-            setContent('')
-            setUserId('')
+        if (canSave) {
+            try {
+                setAddRequestStatus('pending')
+                dispatch(addNewPost({ title, body: content, userId })).unwrap()
+                //unwrap returns a new promise that either has the action payload or it throws an error if it's the rejected action
+
+                setTitle('')
+                setContent('')
+                setUserId('')
+            } catch (err) {
+                console.error('Failed to save post', err)
+            } finally {
+                setAddRequestStatus('idle')
+            }
         }
     }
-
-    const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
 
     const usersOptions = users.map(user => (
         <option key={user.id} value={user.id}>
