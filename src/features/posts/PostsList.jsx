@@ -1,12 +1,23 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 //useSelector will get the global state
-import { selectAllPosts } from "./postsSlice";
+import { selectAllPosts, getPostsStatus, getPostsError, fetchPosts, getPostsError } from "./postsSlice";
+import { useEffect } from "react";
+
 import PostAuthor from "./PostAuthor";
 import TimeAgo from "./TimeAgo";
 
 const PostsList = () => {
+    const dispatch = useDispatch();
 
     const posts = useSelector(selectAllPosts)
+    const postsStatus = useSelector(getPostsStatus)
+    const error = useSelector(getPostsError)
+
+    useEffect(() => {
+        if(postsStatus === 'idle') {
+            dispatch(fetchPosts())
+        }
+    }, [postsStatus, dispatch])
 
     const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
     //this is so that the latest post appears first
