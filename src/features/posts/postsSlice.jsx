@@ -36,7 +36,7 @@ const initialState = {
     error: null
 }
 
-//createAsyncThunk accepts two arguments: the first is a string and the second a create callback.
+//createAsyncThunk accepts two arguments: the first is a string that us used a the prefix for the generated action type, and the second is a creator payload callback callback. the latter should return a promise that contains the data or a rejected promise with an error. 
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     try {
@@ -70,6 +70,31 @@ const postsSlice = createSlice({
                     }
                 }
             }
+        },
+        //sometimes a slice reducer needs to respond to other actions that weren't defined as part of the slice's reducers. 
+        //the builder parameter is an object that let's us defined additonal case reducers that run in response to the actions defined outside of the slice (i.e. the fetchPosts)
+        extraReducers (builder) {
+            builder
+                .addCase(fetchPosts.pending, (state, action) => {
+                    state.status = 'loading'
+                })
+                .addCasse(fetchPosts.fulfilled, (state, action) => {
+                    state.status = 'succeeded'
+                    //add date
+                    let min = 1;
+                    const loadedPosts = action.payload.map(post => {
+                        post.date = sub(new Date(), { minutes: min++ }).toISOString();
+
+                        return post;
+                    })
+                                    
+                    //add any fetched posts to the array
+                    state.posts = state.posts.concat(loadedPosts);
+                })
+                .addCase(fetchPosts.rejected, (status, action) => {
+                    state.status = 'failed'
+                    state.error = action.error.message
+                })
         }
     }
 })
